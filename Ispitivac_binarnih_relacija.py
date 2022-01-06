@@ -5,7 +5,7 @@ listaParova = list()
 skupA = list()
 
 
-# Relacija koja iz stringa uklanja znakove [] i ' npr. [('a','b')] ispisati će kao (a, b)    
+# Funkcija koja iz stringa uklanja znakove [] i ' npr. [('a','b')] ispisati će kao (a, b)    
 def formatStr(s)->str:
     return str(s).replace("'","").strip('[]')
 
@@ -60,6 +60,7 @@ def antirefleksivnost(skupA:list,listaParova:list)->bool:
 
 
 def simetricnost(listaParova:list)->bool:
+    # za svaki (x,y) mora postojati (y,x) unutar liste parova
     for element in listaParova:
         if element[0] == element[1]: continue
         trazeniE = (element[1],element[0])
@@ -68,16 +69,25 @@ def simetricnost(listaParova:list)->bool:
             return False
     print('Relacija JE simetrična')
     return True
-      
+
+def asimetricnost(listaParova:list)->bool:
+    # za svaki (x,y) ne smije postojati (y,x) unutar liste parova
+    for element in listaParova:
+        trazeniE = (element[1],element[0])
+        if trazeniE in listaParova:
+            print(f'Relacija NIJE asimetrična jer za {formatStr(element)} postoji {formatStr(trazeniE)} unutar liste parova')
+            return False
+    print('Relacija JE asimetrična')
+    return True  
 
 
 def unosPodataka():
-    elementiSkupa = input('Unesite elemente skupa A u jednoj liniji odvajajuci ih zarezom (npr. f,g,d,e,r,t):')
+    elementiSkupa = input('Unesite elemente skupa A u jednoj liniji\nodvajajuci ih zarezom (npr. f,g,d,e,r,t):')
     global skupA
     skupA = list(set(elementiSkupa.split(',')))
     n = int(input('Koliko parova želite unijeti?:'))
     #unos n broja parova u glavnu listu (listaParova)
-    print('Unesite članove para odvojene zarezom.(npr. #1 PAR:a,b)')
+    print('Unesite članove para odvojene zarezom.(npr. 1. PAR:a,b)')
     for i in range(n):
         par = input(f'{i+1}. PAR:')
         par = tuple(par.split(','))
@@ -102,7 +112,7 @@ def mainFunc():
 
     simetricna = simetricnost(listaParova)
     if simetricna: print('Relacija NIJE asimetrična')
-    #else asimetričnost()
+    else: asimetricnost(listaParova)
 
 
 mainFunc()
