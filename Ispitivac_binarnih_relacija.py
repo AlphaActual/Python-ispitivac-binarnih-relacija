@@ -21,64 +21,68 @@ def provjeraUnosa(listaParova:list,skupA:list)->bool:
 
 #Relacija koja provjerava tranzitivnost binarne relacije
 def tranzitivnost(listaParova:list)->bool:
+    print('Tranzitivna:',end=' ')
     for element in listaParova:
-        #ako su x i y jednaki testiraj dalje (Relacija je tranzitivna)
         if element[0]==element[1]: continue
-        #napravi novu listu svih elemenata čiji je prvi član jedank drugom članu trenutnog elementa
         B = list(e for e in listaParova if e[0]==element[1])
-        #ako je lista prazna, nije pronađen niti jedan takav element, nastavi testiranje idućeg člana
         if len(B) == 0: continue
-        #ispitaj postoji li u orignialnoj listi A implicirani član (ako su xRy i yRz, postoji li xRz)
+        #ispitaj postoji li u orignialnoj listi (listaParova) implicirani član (ako su xRy i yRz, postoji li xRz)
         for e in B:
             implicElement = (element[0],e[1])
             # ako takav element nije pronađen Relacija nije tranzitivna - vrati False inače vrati True
             if not implicElement in listaParova: 
-                print(f"Relacija NIJE tranzitivna jer za {formatStr(element)} i {formatStr(e)} ne postoji {formatStr(implicElement)} unutar liste parova")
+                print(f"NE jer za {formatStr(element)} i {formatStr(e)} ne postoji {formatStr(implicElement)} unutar liste parova")
                 return False
-    print("Relacija JE tranzitivna")
+    print("DA")
     return True
 
 def refleksivnost(skupA:list,listaParova:list)->bool:
+    print('Refleksivna:',end=' ')
     # za svaki x ∈ skupa A u mora postojati (x,x) u listi parova 
     for element in skupA:
         trazeniE = (element[0],element[0])
         if not trazeniE in listaParova:
-            print(f'Relacija NIJE refleksivna jer za element "{element}" ne postoji par {formatStr(trazeniE)} unutar liste parova')
+            print(f'NE jer za element "{element}" ne postoji par {formatStr(trazeniE)} unutar liste parova')
             return False
-    print("Relacija JE refleksivna")
+    print("DA")
     return True
 
 def antirefleksivnost(skupA:list,listaParova:list)->bool:
+    print('Antirefleksivna:',end=' ')
     # za svaki x ∈ skupa A u NE SMIJE postojati (x,x) u listi parova 
     for element in skupA:
         trazeniE = (element[0],element[0])
         if trazeniE in listaParova:
-            print(f'Relacija NIJE antirefleksivna jer za element "{element}" postoji par {formatStr(trazeniE)} unutar liste parova')
+            print(f'NE jer za element "{element}" postoji par {formatStr(trazeniE)} unutar liste parova')
             return False
-    print("Relacija JE antirefleksivna")
+    print("DA")
     return True
 
 
 def simetricnost(listaParova:list)->bool:
+    print('Simetrična:',end=' ')
     # za svaki (x,y) mora postojati (y,x) unutar liste parova
     for element in listaParova:
         if element[0] == element[1]: continue
         trazeniE = (element[1],element[0])
         if not trazeniE in listaParova:
-            print(f'Relacija NIJE simetrična jer za {formatStr(element)} ne postoji {formatStr(trazeniE)} unutar liste parova')
+            print(f'NE jer za {formatStr(element)} ne postoji {formatStr(trazeniE)} unutar liste parova')
             return False
-    print('Relacija JE simetrična')
+    print('DA')
     return True
 
-def asimetricnost(listaParova:list)->bool:
-    # za svaki (x,y) ne smije postojati (y,x) unutar liste parova
-    for element in listaParova:
-        trazeniE = (element[1],element[0])
+
+def antisimetricnost(listaParova:list)->bool:
+    print('Antisimetrična:',end=' ')
+    # za svaki (x,y) ne smije postojati (y,x) unutar liste parova osim kada je x==y
+    for x,y in listaParova:
+        if x==y: continue
+        trazeniE = (y,x)
         if trazeniE in listaParova:
-            print(f'Relacija NIJE asimetrična jer za {formatStr(element)} postoji {formatStr(trazeniE)} unutar liste parova')
+            print(f'NE jer za {formatStr((x,y))} postoji {formatStr(trazeniE)} unutar liste parova')
             return False
-    print('Relacija JE asimetrična')
-    return True  
+    print('DA')
+    return True   
 
 
 def unosPodataka():
@@ -103,17 +107,40 @@ def unosPodataka():
 def mainFunc():
     unosPodataka()
     if not provjeraUnosa(listaParova,skupA): return
+    print("\nBinarna relacija je:\n")
+    #testiranje tranzitivnosti
+    tranzitivna = tranzitivnost(listaParova)
 
-    tranzitivnost(listaParova)
-
+    #testiranje refleksivnosti i antirefleksivnosti
     refleksivna = refleksivnost(skupA,listaParova)
-    if refleksivna: print('Funkcija NIJE antirefleksivna')
-    else: antirefleksivnost(skupA,listaParova)
+    if refleksivna: 
+        print('Antirefleksivna: NE jer je refleksivna')
+        antirefleksivna = False
+    else: antirefleksivna = antirefleksivnost(skupA,listaParova)
 
-    simetricna = simetricnost(listaParova)
-    if simetricna: print('Relacija NIJE asimetrična')
-    else: asimetricnost(listaParova)
+    #testiranje antisimetričnosti
+    antisimetrična = antisimetricnost(listaParova)
+
+    #testiranje simetričnosti i asimetričnosti
+    if antisimetrična:
+        print('Simetrična: NE jer je antisimetrična')
+        simetricna = False
+    else: simetricna = simetricnost(listaParova)
+    
+    #asimetrična je ako je antisimetrična i antirefleksivna
+    if antisimetrična and antirefleksivna: print('Asimetrična: DA jer je antisimetrična i antirefleksivna')
+    else: print('Asimetrična: NE')
+
+    #ispitivanje ekvivalencije
+    if refleksivna and simetricna and tranzitivna: print('Relacija ekvivalencije: DA - Relacija je tranzitivna,simetrična i refleksivna')
 
 
 mainFunc()
-input('Pritisnite ENTER za kraj programa')
+input('\nPritisnite ENTER za kraj programa')
+
+#TO-DO:
+#antirefleksivna
+#funkcijska
+#graficki prikaz?
+#relacija ekvivalencije
+#totalni i strogi uređaj
