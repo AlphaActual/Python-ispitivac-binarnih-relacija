@@ -4,6 +4,10 @@ import re
 listaParova = list()
 skupA = list()
 
+#za testiranje
+#listaParova = [('a','b'),('a','c'),('a','d'),('a','e'),('a','f'),('b','b'),('c','c'),('d','d'),('e','e'),('f','f'),('g','b'),('g','c'),('g','d'),('g','e'),('g','f'),('g','g')]
+#skupA = ['c','e','b','f','a','d','g']
+
 
 # Funkcija koja iz stringa uklanja znakove [] i ' npr. [('a','b')] ispisati će kao (a, b)    
 def formatStr(s)->str:
@@ -100,13 +104,37 @@ def unosPodataka():
     print(formatStr(listaParova))
     #ispis skupa
     print(f'Skup A = {skupA}')
+    #graficki prikaz relacije
+    graficki(listaParova,skupA)
+
+
+def graficki(listaParova,skupA):
+    skupA.sort()
+    print('  ',end='')
+
+    #header tablice
+    for e in skupA:
+        print(e,end=" ")
+    print(' ')
+    #sadrzaj tablice
+    for e in skupA:
+        redak = e
+        elementiRetka = [el[1] for el in listaParova if el[0]==e] 
+        for y in skupA:
+            jednak = False
+            for i in elementiRetka:
+                if i == y: 
+                    redak = redak + ' x'
+                    jednak = True
+                    break
+            if not jednak: redak = redak + ' .'
+        print(redak)
     
-
-
 
 def mainFunc():
     unosPodataka()
     if not provjeraUnosa(listaParova,skupA): return
+
     print("\nBinarna relacija je:\n")
     #testiranje tranzitivnosti
     tranzitivna = tranzitivnost(listaParova)
@@ -126,21 +154,21 @@ def mainFunc():
         print('Simetrična: NE jer je antisimetrična')
         simetricna = False
     else: simetricna = simetricnost(listaParova)
+
+    if simetricna: print('Asimetrična: NE jer je simetrična')
     
     #asimetrična je ako je antisimetrična i antirefleksivna
     if antisimetrična and antirefleksivna: print('Asimetrična: DA jer je antisimetrična i antirefleksivna')
-    else: print('Asimetrična: NE')
+    else: print('Asimetrična: NE jer nije antirefleksivna')
 
     #ispitivanje ekvivalencije
     if refleksivna and simetricna and tranzitivna: print('Relacija ekvivalencije: DA - Relacija je tranzitivna,simetrična i refleksivna')
+
 
 
 mainFunc()
 input('\nPritisnite ENTER za kraj programa')
 
 #TO-DO:
-#antirefleksivna
 #funkcijska
-#graficki prikaz?
-#relacija ekvivalencije
 #totalni i strogi uređaj
