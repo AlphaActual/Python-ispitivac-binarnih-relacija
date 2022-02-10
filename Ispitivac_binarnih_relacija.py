@@ -257,28 +257,35 @@ def ispitivanjeRelacija():
     
     #testiranje simetricnosti
     simetricna = simetricnost(listaParova) 
-    if simetricna:
+    
+    #testiranje antisimetricnosti
+    antisimetricna = antisimetricnost(listaParova)
+
+    #testiranje asimetričnosti
+    if (simetricna):
         with open('Relacije.txt', 'a') as f:
-            print('Antisimetricna: NE jer je simetricna')
-            print('Antisimetricna: NE jer je simetricna',file=f)
-            antisimetricna = False
             print('Asimetricna: NE jer je simetricna')
             print('Asimetricna: NE jer je simetricna',file=f)
-    else:
-        #testiranje antisimetricnosti
-        antisimetricna = antisimetricnost(listaParova)
+    elif (antisimetricna and antirefleksivna):
         with open('Relacije.txt', 'a') as f:
-            if antisimetricna:
-                if antirefleksivna: 
-                    print('Asimetricna: DA jer je antisimetricna i antirefleksivna')
-                    print('Asimetricna: DA jer je antisimetricna i antirefleksivna',file=f)
-                else:
-                    print('Asimetricna: NE jer nije antirefleksivna')
-                    print('Asimetricna: NE jer nije antirefleksivna',file=f)
-            else:
-                print('Asimetricna: NE jer nije antisimetricna')
-                print('Asimetricna: NE jer nije antisimetricna',file=f)
+            print('Asimetricna: DA jer je antisimetricna i antirefleksivna')
+            print('Asimetricna: DA jer je antisimetricna i antirefleksivna',file=f)
+    elif (antisimetricna and not antirefleksivna):
+        with open('Relacije.txt', 'a') as f:
+            print('Asimetricna: NE jer nije antirefleksivna')
+            print('Asimetricna: NE jer nije antirefleksivna',file=f)
+    elif (not antisimetricna and not antirefleksivna):
+        with open('Relacije.txt', 'a') as f:
+            print('Asimetricna: NE jer nije antirefleksivna niti antisimetricna')
+            print('Asimetricna: NE jer nije antirefleksivna niti antisimetricna',file=f)
+    else:
+        with open('Relacije.txt', 'a') as f:
+            print('Asimetricna: NE jer nije antisimetricna')
+            print('Asimetricna: NE jer nije antisimetricna',file=f)
+    
 
+    
+    
     with open('Relacije.txt', 'a') as f:
         #ispitivanje ekvivalencije
         if refleksivna and simetricna and tranzitivna:
