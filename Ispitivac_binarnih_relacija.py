@@ -1,6 +1,6 @@
 import re
 import random
-import sys
+import time
 
 ###___SPREMIsTA_PODATAKA___
 listaParova = list()
@@ -34,7 +34,7 @@ def unosPodataka():
 
     elementiSkupa = input('Unesite elemente skupa A u jednoj liniji\nodvajajući ih zarezom (npr. f,g,d,e,r,t):')
     skupA = list(set(elementiSkupa.split(',')))
-    n = int(input('Koliko parova želite unijeti?:'))
+    n = int(input('Koliko parova Zelite unijeti?:'))
     #unos n broja parova u glavnu listu (listaParova)
     print('Unesite oba clana para odvojena zarezom.')
     for i in range(n):
@@ -45,23 +45,28 @@ def unosPodataka():
     
 
 def ispisUlaznihPodataka():
-    print('Uneseni parovi su:')
+    print('\nUneseni parovi su:')
     print(formatStr(listaParova))
     #ispis skupa
-    print(f'\nSkup A = {skupA}')
-    #graficki prikaz relacije
-    graficki(listaParova,skupA)
+    stringSkupa = str(skupA).replace("[","{").replace("]","}")
+    print(f'\nSkup A = {stringSkupa}')
 
     #ispis u file
     with open('Relacije.txt', 'a') as f:
-        print('Uneseni parovi su:', file=f)
+        print('\nUneseni parovi su:', file=f)
         print(formatStr(listaParova), file=f)
-        print(f'\nSkup A = {skupA}', file=f)
-    
+        print(f'\nSkup A = {stringSkupa}', file=f)
+    #graficki prikaz relacije
+    graficki(listaParova,skupA)
 
 def welcome():
+    #vremenska oznaka
+    seconds = time.time()
+    local_time = time.ctime(seconds)
+    
     with open('Relacije.txt', 'a') as f:
         print("__________Dobrodosli u Ispitivac binarnih relacija v1.0__________".center(65, ' '))
+        print("\nLokalno vrijeme:", local_time, file=f)
         print("__________Dobrodosli u Ispitivac binarnih relacija v1.0__________".center(65, ' '), file=f)
 
 
@@ -103,14 +108,14 @@ def uredjivanjeParova():
     global skupA
     global listaParova
     while (True):
-        odabir = input("\nŽelite li editirati parove binarne relacije?(da/ne):")
+        odabir = input("\nZelite li editirati parove binarne relacije?(da/ne):")
         if(odabir != "DA" and odabir != "da" and odabir != "Da"): break
         else:
             while(True):
-                odabir = int(input("Želite li: 1) dodati nove parove ili 2) obrisati pojedine parove:"))
+                odabir = int(input("Zelite li: 1) dodati nove parove ili 2) obrisati pojedine parove:"))
                 if(odabir == 1 or odabir == 2): break
             if(odabir == 1):
-                parovi = input("Unesite parove koje želite DODATI u ovom formatu (x,y) (x,z) (z,x):")
+                parovi = input("Unesite parove koje Zelite DODATI u ovom formatu (x,y) (x,z) (z,x):")
                 parovi = parovi.split() #lista stringova, potrebno je pretvoriti ju u listu tuople parova
                 noviParovi = list()
                 for item in parovi:
@@ -121,7 +126,7 @@ def uredjivanjeParova():
                     ispisUlaznihPodataka()
                     ispitivanjeRelacija()
             elif(odabir == 2):
-                parovi = input("Unesite parove koje želite OBRISATI u ovom formatu (x,y) (x,z) (z,x):")
+                parovi = input("Unesite parove koje Zelite OBRISATI u ovom formatu (x,y) (x,z) (z,x):")
                 parovi = parovi.split() #lista stringova, potrebno je pretvoriti ju u listu tuople parova
                 noviParovi = list()
                 for item in parovi:
@@ -147,103 +152,146 @@ def GlavniIzbornik()-> int:
 ###___GLAVNE FUNKCIJE___
 
 def tranzitivnost(listaParova:list)->bool:
-    print('Tranzitivna:',end=' ')
-    for element in listaParova:
-        if element[0]==element[1]: continue
-        B = list(e for e in listaParova if e[0]==element[1])
-        if len(B) == 0: continue
-        #ispitaj postoji li u orignialnoj listi (listaParova) implicirani clan (ako su xRy i yRz, postoji li xRz)
-        for e in B:
-            implicElement = (element[0],e[1])
-            # ako takav element nije pronađen Relacija nije tranzitivna - vrati False inace vrati True
-            if not implicElement in listaParova: 
-                print(f"NE jer za {formatStr(element)} i {formatStr(e)} ne postoji {formatStr(implicElement)} unutar liste parova")
-                return False
-    print("DA")
-    return True
+    with open('Relacije.txt', 'a') as f:
+        print('Tranzitivna:',end=' ')
+        print('Tranzitivna:',end=' ',file=f)
+        for element in listaParova:
+            if element[0]==element[1]: continue
+            B = list(e for e in listaParova if e[0]==element[1])
+            if len(B) == 0: continue
+            #ispitaj postoji li u orignialnoj listi (listaParova) implicirani clan (ako su xRy i yRz, postoji li xRz)
+            for e in B:
+                implicElement = (element[0],e[1])
+                # ako takav element nije pronađen Relacija nije tranzitivna - vrati False inace vrati True
+                if not implicElement in listaParova: 
+                    print(f"NE jer za {formatStr(element)} i {formatStr(e)} ne postoji {formatStr(implicElement)} unutar liste parova")
+                    print(f"NE jer za {formatStr(element)} i {formatStr(e)} ne postoji {formatStr(implicElement)} unutar liste parova",file=f)
+                    return False
+        print("DA")
+        print("DA",file=f)
+        return True
 
 
 def refleksivnost(skupA:list,listaParova:list)->bool:
-    print('Refleksivna:',end=' ')
-    # za svaki x ∈ skupa A mora postojati (x,x) u listi parova 
-    for element in skupA:
-        trazeniE = (element[0],element[0])
-        if not trazeniE in listaParova:
-            print(f'NE jer za element "{element}" ne postoji par {formatStr(trazeniE)} unutar liste parova')
-            return False
-    print("DA")
-    return True
+    with open('Relacije.txt', 'a') as f:
+        print('Refleksivna:',end=' ')
+        print('Refleksivna:',end=' ',file=f)
+        # za svaki x ∈ skupa A mora postojati (x,x) u listi parova 
+        for element in skupA:
+            trazeniE = (element[0],element[0])
+            if not trazeniE in listaParova:
+                print(f'NE jer za element "{element}" ne postoji par {formatStr(trazeniE)} unutar liste parova')
+                print(f'NE jer za element "{element}" ne postoji par {formatStr(trazeniE)} unutar liste parova',file=f)
+                return False
+        print("DA")
+        print("DA",file=f)
+        return True
 
 
 def antirefleksivnost(skupA:list,listaParova:list)->bool:
-    print('Antirefleksivna:',end=' ')
-    # za svaki x ∈ skupa A u NE SMIJE postojati (x,x) u listi parova 
-    for element in skupA:
-        trazeniE = (element[0],element[0])
-        if trazeniE in listaParova:
-            print(f'NE jer za element "{element}" postoji par {formatStr(trazeniE)} unutar liste parova')
-            return False
-    print("DA")
-    return True
+    with open('Relacije.txt', 'a') as f:
+        print('Antirefleksivna:',end=' ')
+        print('Antirefleksivna:',end=' ',file=f)
+        # za svaki x ∈ skupa A u NE SMIJE postojati (x,x) u listi parova 
+        for element in skupA:
+            trazeniE = (element[0],element[0])
+            if trazeniE in listaParova:
+                print(f'NE jer za element "{element}" postoji par {formatStr(trazeniE)} unutar liste parova')
+                print(f'NE jer za element "{element}" postoji par {formatStr(trazeniE)} unutar liste parova',file=f)
+                return False
+        print("DA")
+        print("DA",file=f)
+        return True
 
 
 def simetricnost(listaParova:list)->bool:
-    print('Simetricna:',end=' ')
-    # za svaki (x,y) mora postojati (y,x) unutar liste parova
-    for element in listaParova:
-        if element[0] == element[1]: continue
-        trazeniE = (element[1],element[0])
-        if not trazeniE in listaParova:
-            print(f'NE jer za {formatStr(element)} ne postoji {formatStr(trazeniE)} unutar liste parova')
-            return False
-    print('DA')
-    return True
+    with open('Relacije.txt', 'a') as f:
+        print('Simetricna:',end=' ')
+        print('Simetricna:',end=' ',file=f)
+        # za svaki (x,y) mora postojati (y,x) unutar liste parova
+        for element in listaParova:
+            if element[0] == element[1]: continue
+            trazeniE = (element[1],element[0])
+            if not trazeniE in listaParova:
+                print(f'NE jer za {formatStr(element)} ne postoji {formatStr(trazeniE)} unutar liste parova')
+                print(f'NE jer za {formatStr(element)} ne postoji {formatStr(trazeniE)} unutar liste parova',file=f)
+                return False
+        print('DA')
+        print('DA',file=f)
+        return True
 
 
 def antisimetricnost(listaParova:list)->bool:
-    print('Antisimetricna:',end=' ')
-    # za svaki (x,y) ne smije postojati (y,x) unutar liste parova osim kada je x==y
-    for x,y in listaParova:
-        if x==y: continue
-        trazeniE = (y,x)
-        if trazeniE in listaParova:
-            print(f'NE jer za {formatStr((x,y))} postoji {formatStr(trazeniE)} unutar liste parova')
-            return False
-    print('DA')
-    return True   
+    with open('Relacije.txt', 'a') as f:
+        print('Antisimetricna:',end=' ')
+        print('Antisimetricna:',end=' ',file=f)
+        # za svaki (x,y) ne smije postojati (y,x) unutar liste parova osim kada je x==y
+        for x,y in listaParova:
+            if x==y: continue
+            trazeniE = (y,x)
+            if trazeniE in listaParova:
+                print(f'NE jer za {formatStr((x,y))} postoji {formatStr(trazeniE)} unutar liste parova')
+                print(f'NE jer za {formatStr((x,y))} postoji {formatStr(trazeniE)} unutar liste parova',file=f)
+                return False
+        print('DA')
+        print('DA',file=f)
+        return True   
 
 def ispitivanjeRelacija():
-    print("\nBinarna relacija je:\n")
+    with open('Relacije.txt', 'a') as f:
+        print("\nBinarna relacija je:\n")
+        print("\nBinarna relacija je:\n", file=f)
+
     #testiranje tranzitivnosti
     tranzitivna = tranzitivnost(listaParova)
 
     #testiranje refleksivnosti i antirefleksivnosti
     refleksivna = refleksivnost(skupA,listaParova)
-    if refleksivna: 
-        print('Antirefleksivna: NE jer je refleksivna')
+    if refleksivna:
+        with open('Relacije.txt', 'a') as f: 
+            print('Antirefleksivna: NE jer je refleksivna')
+            print('Antirefleksivna: NE jer je refleksivna', file=f)
         antirefleksivna = False
     else: antirefleksivna = antirefleksivnost(skupA,listaParova)
 
-    #testiranje antisimetricnosti
-    antisimetricna = antisimetricnost(listaParova)
-
-    #testiranje simetricnosti i asimetricnosti
-    if antisimetricna:
-        print('Simetricna: NE jer je antisimetricna')
-        simetricna = False
-    else: simetricna = simetricnost(listaParova)
-
-    if simetricna: print('Asimetricna: NE jer je simetricna')
     
-    #asimetricna je ako je antisimetricna i antirefleksivna
-    if antisimetricna and antirefleksivna: print('Asimetricna: DA jer je antisimetricna i antirefleksivna')
-    elif not simetricna: print('Asimetricna: NE jer nije antirefleksivna')
+    #testiranje simetricnosti
+    simetricna = simetricnost(listaParova) 
+    if simetricna:
+        with open('Relacije.txt', 'a') as f:
+            print('Antisimetricna: NE jer je simetricna')
+            print('Antisimetricna: NE jer je simetricna',file=f)
+            antisimetricna = False
+            print('Asimetricna: NE jer je simetricna')
+            print('Asimetricna: NE jer je simetricna',file=f)
+    else:
+        #testiranje antisimetricnosti
+        antisimetricna = antisimetricnost(listaParova)
+        with open('Relacije.txt', 'a') as f:
+            if antisimetricna:
+                if antirefleksivna: 
+                    print('Asimetricna: DA jer je antisimetricna i antirefleksivna')
+                    print('Asimetricna: DA jer je antisimetricna i antirefleksivna',file=f)
+                else:
+                    print('Asimetricna: NE jer nije antirefleksivna')
+                    print('Asimetricna: NE jer nije antirefleksivna',file=f)
+            else:
+                print('Asimetricna: NE jer nije antisimetricna')
+                print('Asimetricna: NE jer nije antisimetricna',file=f)
 
-    #ispitivanje ekvivalencije
-    if refleksivna and simetricna and tranzitivna: print('Relacija ekvivalencije: DA - Relacija je tranzitivna,simetricna i refleksivna')
+    with open('Relacije.txt', 'a') as f:
+        #ispitivanje ekvivalencije
+        if refleksivna and simetricna and tranzitivna:
+            print('Relacija ekvivalencije: DA - Relacija je tranzitivna, simetricna i refleksivna')
+            print('Relacija ekvivalencije: DA - Relacija je tranzitivna, simetricna i refleksivna',file=f)
 
-    if tranzitivna and antirefleksivna and antisimetricna: print('Strogi uređaj! Antirefleksivna, tranzitivna, antisimetricna')
-    elif tranzitivna and refleksivna and antisimetricna: print('Parcijalni uređaj! Refleksivna, tranzitivna, antisimetricna')
+        #ispitivanje relacije uređaja
+        if tranzitivna and antirefleksivna and antisimetricna: 
+            print('Strogi uređaj! Antirefleksivna, tranzitivna, antisimetricna')
+            print('Strogi uređaj! Antirefleksivna, tranzitivna, antisimetricna',file=f)
+        elif tranzitivna and refleksivna and antisimetricna:
+            print('Parcijalni uređaj! Refleksivna, tranzitivna, antisimetricna')
+            print('Parcijalni uređaj! Refleksivna, tranzitivna, antisimetricna',file=f)
 
 
 
@@ -253,9 +301,8 @@ def generirajRelaciju():
     skupA.clear()
     listaParova.clear()
 
-    #random broj elemenata skupa 1-7
-    #brElemenata = random.randrange(1, 7)
-    brElemenata = 6
+    #random broj elemenata skupa 4-7
+    brElemenata = random.randrange(4, 7)
     #popunjavanje skupa A sa jedinstvenim elementima (slova od a-z)
     abeceda = "abcdefghijklmnopqrstuvwxyz"
     while(len(skupA) != brElemenata):
@@ -296,16 +343,13 @@ def mainFunc():
 
     
     
-###___POcETAK_PROGRAMA___
+###___POCETAK_PROGRAMA___
+
 welcome()
 while True:
     mainFunc()
-    izbor = input('\nŽelite li novi unos? da/ne:')
+    izbor = input('\nZelite li novi unos? da/ne:')
     print('\n')
     if izbor == 'NE' or izbor == 'ne' or izbor == 'Ne': break
    
 input("Kraj programa! Pritisnite ENTER.")    
-
-#TO-DO:
-#funkcijska
-#prepraviti {} za skup A

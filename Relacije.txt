@@ -1,0 +1,92 @@
+
+Lokalno vrijeme: Thu Feb 10 12:43:34 2022
+__________Dobrodosli u Ispitivac binarnih relacija v1.0__________
+
+Uneseni parovi su:
+(u, p), (d, x), (x, c), (x, p), (q, u), (c, p), (c, q), (x, x), (u, x), (x, u), (d, c), (q, c), (p, q), (d, p), (p, d), (u, u), (u, d)
+
+Skup A = {'p', 'u', 'c', 'q', 'x', 'd'}
+
+  c d p q u x  
+c . . x x . .
+d x . x . . x
+p . x . x . .
+q x . . . x .
+u . x x . x x
+x x . x . x x
+
+Binarna relacija je:
+
+Tranzitivna: NE jer za (u, p) i (p, q) ne postoji (u, q) unutar liste parova
+Refleksivna: NE jer za element "c" ne postoji par (c, c) unutar liste parova
+Antirefleksivna: NE jer za element "u" postoji par (u, u) unutar liste parova
+Simetricna: NE jer za (u, p) ne postoji (p, u) unutar liste parova
+Antisimetricna: NE jer za (c, q) postoji (q, c) unutar liste parova
+Asimetricna: NE jer nije antisimetricna
+
+Uneseni parovi su:
+(o, n), (j, j), (q, e), (q, q), (e, q), (e, j), (e, o), (o, j), (q, j), (n, q), (e, n), (q, o), (j, q), (n, j), (o, e), (n, e)
+
+Skup A = {'o', 'n', 'e', 'j', 'q'}
+
+  e j n o q  
+e . x x x x
+j . x . . x
+n x x . . x
+o x x x . .
+q x x . x x
+
+Binarna relacija je:
+
+Tranzitivna: NE jer za (o, n) i (n, q) ne postoji (o, q) unutar liste parova
+Refleksivna: NE jer za element "e" ne postoji par (e, e) unutar liste parova
+Antirefleksivna: NE jer za element "j" postoji par (j, j) unutar liste parova
+Simetricna: NE jer za (o, n) ne postoji (n, o) unutar liste parova
+Antisimetricna: NE jer za (q, e) postoji (e, q) unutar liste parova
+Asimetricna: NE jer nije antisimetricna
+
+Uneseni parovi su:
+(z, z), (v, x)
+
+Skup A = {'x', 'n', 'z', 'v', 't'}
+
+  n t v x z  
+n . . . . .
+t . . . . .
+v . . . x .
+x . . . . .
+z . . . . x
+
+Binarna relacija je:
+
+Tranzitivna: DA
+Refleksivna: NE jer za element "n" ne postoji par (n, n) unutar liste parova
+Antirefleksivna: NE jer za element "z" postoji par (z, z) unutar liste parova
+Simetricna: NE jer za (v, x) ne postoji (x, v) unutar liste parova
+Antisimetricna: DA
+Asimetricna: NE jer nije antirefleksivna
+
+Lokalno vrijeme: Thu Feb 10 12:47:40 2022
+__________Dobrodosli u Ispitivac binarnih relacija v1.0__________
+
+Uneseni parovi su:
+(c, c)
+
+Skup A = {'a', 'c', 'f', 'd', 'b', 'e'}
+
+  a b c d e f  
+a . . . . . .
+b . . . . . .
+c . . x . . .
+d . . . . . .
+e . . . . . .
+f . . . . . .
+
+Binarna relacija je:
+
+Tranzitivna: DA
+Refleksivna: NE jer za element "a" ne postoji par (a, a) unutar liste parova
+Antirefleksivna: NE jer za element "c" postoji par (c, c) unutar liste parova
+Simetricna: DA
+Antisimetricna: NE jer je simetricna
+Asimetricna: NE jer je simetricna
