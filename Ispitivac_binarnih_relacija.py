@@ -134,7 +134,8 @@ def uredjivanjeParova():
                 if provjeraUnosa(noviParovi,skupA):
                     #brisanje iz liste
                     for item in noviParovi:
-                        listaParova.remove(item)
+                        if item in listaParova:
+                            listaParova.remove(item)
                     ispisUlaznihPodataka()
                     ispitivanjeRelacija()
 
